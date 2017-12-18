@@ -20,7 +20,7 @@ use Psr\Http\Message\ResponseInterface;
 
 class Client
 {
-    const VERSION = '1.1.2';
+    const VERSION = '1.1.3';
 
     /**
      * @var GenericFactory
@@ -58,6 +58,8 @@ class Client
     private $debug = false;
     private $base_uri;
 
+    private $proxy;
+
     /**
      * Client constructor.
      * @param array $params
@@ -83,6 +85,9 @@ class Client
         if (array_key_exists('base_uri', $params)) {
 
             $this->base_uri = rtrim($params['base_uri'], '/');
+        }
+        if(array_key_exists('proxy', $params)) {
+            $this->proxy = $params['proxy'];
         }
 
         $this->username = $username;
@@ -156,12 +161,16 @@ class Client
      */
     protected function getBaseRequestParams()
     {
-        return [
+        $params = [
             'auth' => [$this->username, $this->password],
             'headers' => [
                 'User-Agent' => $this->getUserAgent()
             ]
         ];
+        if($this->proxy) {
+            $params['proxy'] = $this->proxy;
+        }
+        return $params;
     }
 
     /**
