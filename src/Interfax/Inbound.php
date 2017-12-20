@@ -94,4 +94,23 @@ class Inbound
 
         throw new \RuntimeException('A reasonable but unhandled response was received');
     }
+
+    /**
+     * Retrieve the image for an incoming fax with the given id.
+     *
+     * @param $id
+     * @return Image|null
+     */
+    public function getFaxImage($id)
+    {
+        try {
+            $img = $this->client->get('/inbound/faxes/' . $id . '/image');
+            return $this->factory->instantiateClass('Interfax\Image', [$img]);
+        } catch (RequestException $e) {
+            if ((int) $e->getStatusCode() === 404) {
+                return null;
+            }
+            throw $e;
+        }
+    }
 }
