@@ -64,4 +64,9 @@ class Image
 
         return fclose($handle);
     }
+
+    public function getContent()
+    {
+        return ($this->stream) ? $this->stream->getContents() : null;
+    }
 }
